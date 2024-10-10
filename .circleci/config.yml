@@ -8,6 +8,7 @@ jobs:
     docker:
       - image: cimg/php:7.4 
     steps:
+      - checkout
       - php/install-composer:
           install-version: 2.0.8 
       - php/install-packages

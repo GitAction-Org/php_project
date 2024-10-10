@@ -87,31 +87,44 @@
 version: 2.1
 
 orbs:
-  phpunit: stockfiller/phpunit@1.0.0
-  php: circleci/php@1.1.0  # Still using this for Composer if necessary
+  php: circleci/php@1.1.0
 
 jobs:
   run_tests:
     docker:
-      - image: cimg/php:7.4  # Use the appropriate PHP image version
-    working_directory: ~/your_project_directory  # Change this to your project directory
+      - image: cimg/php:7.4 # Use the appropriate PHP image version
+    working_directory: /home/circleci/project  # Set the correct working directory
     steps:
       - checkout  # Checkout the code from the repository
 
-      # Install Composer using the CircleCI PHP orb
-      - php/install-composer:
-          install-version: 2.0.8
+      # Install Composer and PHPUnit
+      - run:
+          name: Install Composer
+          command: |
+            apt-get update && apt-get install -y wget unzip # Install wget and unzip
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+            php -r "unlink('composer-setup.php');"
 
-      # Install project dependencies
       - run:
           name: Install Dependencies
           command: composer install --no-interaction --no-progress --no-suggest
 
-      # Use the PHPUnit Orb to run tests
-      - phpunit/run:
-          test_directory: tests  # Directory containing your tests
-          phpunit_version: "9.5.0"  # Specify a version if needed
-          options: "--testsuite=Unit"  # Custom options for PHPUnit
+      - run:
+          name: Download PHPUnit
+          command: |
+            wget -O phpunit https://phar.phpunit.de/phpunit.phar # Download PHPUnit
+            chmod +x phpunit # Make it executable
+            mv phpunit /usr/local/bin/phpunit # Move PHPUnit to a directory in PATH
+
+      # Run PHPUnit tests
+      - run:
+          name: Run Unit Tests
+          command: phpunit --testsuite=Unit # Run PHPUnit for the 'Unit' test suite
+
+      - run:
+          name: Run Feature Tests
+          command: phpunit --testsuite=Feature # Run PHPUnit for the 'Feature' test suite
 
 workflows:
   test_application:

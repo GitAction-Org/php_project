@@ -1,9 +1,33 @@
 version: 2.1
-#Version2
+
 orbs:
   php: circleci/php@1.1.0
 
+jobs:
+  install_dependencies:
+    docker:
+      - image: cimg/php:7.4 # You can choose any PHP version you need
+    steps:
+      - checkout
+      - php/install-composer:
+          install-version: 2.0.8 # Use appropriate composer version
+      - php/install-packages
+
+  run_tests:
+    docker:
+      - image: cimg/php:7.4
+    steps:
+      - checkout
+      - php/install-composer:
+          install-version: 2.0.8
+      - php/install-packages
+      - run:
+          name: Run Test Cases
+          command: composer test
+
 workflows:
-  test:
+  version: 2.1
+  test_application:
     jobs:
-      - php/test
+      - install_dependencies
+      - run_tests

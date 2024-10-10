@@ -1,0 +1,4 @@
+vendor
+.phpunit.result.cache
+clover-for-html.phar
+phpunit-9.phar

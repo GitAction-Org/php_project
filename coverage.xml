@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1706102672">
+  <project timestamp="1706102672">
+    <file name="D:\ALM_Traning\sonarqube_poc\Advance\PHP\src\Calculator.php">
+      <class name="Calculator" namespace="global">
+        <metrics complexity="2" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="4" coveredelements="4"/>
+      </class>
+      <line num="3" type="method" name="add" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="4" type="stmt" count="1"/>
+      <line num="7" type="method" name="subtract" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="8" type="stmt" count="1"/>
+      <metrics loc="11" ncloc="11" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="4" coveredelements="4"/>
+    </file>
+    <metrics files="1" loc="11" ncloc="11" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="4" coveredelements="4"/>
+  </project>
+</coverage>

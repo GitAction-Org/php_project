@@ -97,25 +97,26 @@ jobs:
     steps:
       - checkout  # Checkout the code from the repository
 
-      # Install Composer and PHPUnit
+      # Update package list and install Composer
       - run:
           name: Install Composer
           command: |
-            apt-get update && apt-get install -y wget unzip # Install wget and unzip
+            sudo apt-get update && sudo apt-get install -y wget unzip # Install wget and unzip
             php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-            php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+            php composer-setup.php --install-dir=./composer --filename=composer # Install Composer locally
             php -r "unlink('composer-setup.php');"
+            echo 'export PATH=$PATH:$PWD/composer' >> $BASH_ENV # Add Composer to PATH
 
       - run:
           name: Install Dependencies
           command: composer install --no-interaction --no-progress --no-suggest
 
+      # Install PHPUnit globally using Composer
       - run:
-          name: Download PHPUnit
+          name: Install PHPUnit
           command: |
-            wget -O phpunit https://phar.phpunit.de/phpunit.phar # Download PHPUnit
-            chmod +x phpunit # Make it executable
-            mv phpunit /usr/local/bin/phpunit # Move PHPUnit to a directory in PATH
+            composer global require phpunit/phpunit # Install PHPUnit globally
+            echo 'export PATH=$PATH:$HOME/.composer/vendor/bin' >> $BASH_ENV # Add PHPUnit to PATH
 
       # Run PHPUnit tests
       - run:

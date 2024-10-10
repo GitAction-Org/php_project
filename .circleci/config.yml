@@ -94,7 +94,7 @@ jobs:
   run_tests:
     docker:
       - image: cimg/php:7.4  # Use the appropriate PHP image version
-    working_directory: ~/project  # Set the correct working directory
+    working_directory: composer.json
     steps:
       - checkout  # Checkout the code from the repository
 

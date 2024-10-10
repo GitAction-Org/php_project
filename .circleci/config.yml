@@ -41,7 +41,7 @@ jobs:
     docker:
       - image: cimg/php:7.4
     steps:
-      - checkout
+      
       - run:
           name: Show Current Directory
           command: pwd

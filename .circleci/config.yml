@@ -1,17 +1,44 @@
+# version: 2.1
+
+# orbs:
+#   php: circleci/php@1.1.0
+
+# jobs:
+#   install_dependencies:
+#     docker:
+#       - image: cimg/php:7.4 
+#     steps:
+#       - checkout
+#       - php/install-composer:
+#           install-version: 2.0.8 
+#       - php/install-packages
+
+#   run_tests:
+#     docker:
+#       - image: cimg/php:7.4
+#     steps:
+#       - php/install-composer:
+#           install-version: 2.0.8
+#       - php/install-packages
+#       - run:
+#           name: Run Test Cases
+#           command: composer test
+
+# workflows:
+#   test_application:
+#     jobs:
+#       - install_dependencies
+#       - run_tests
+
+
+#-----------------------------------------------------------
+
 version: 2.1
 
 orbs:
   php: circleci/php@1.1.0
 
 jobs:
-  # install_dependencies:
-  #   docker:
-  #     - image: cimg/php:7.4 
-  #   steps:
-  #     - checkout
-  #     - php/install-composer:
-  #         install-version: 2.0.8 
-  #     - php/install-packages
 
   run_tests:
     docker:
@@ -27,8 +54,4 @@ jobs:
 workflows:
   test_application:
     jobs:
-      - install_dependencies
       - run_tests
-
-
-#-----------------------------------------------------------

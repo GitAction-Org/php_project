@@ -25,7 +25,6 @@ jobs:
           command: composer test
 
 workflows:
-  version: 2.1
   test_application:
     jobs:
       - install_dependencies

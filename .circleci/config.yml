@@ -94,7 +94,7 @@ jobs:
   run_tests:
     docker:
       - image: cimg/php:7.4  # Use the appropriate PHP image version
-    working_directory: composer.json
+    working_directory: ~/your_project_directory  # Change this to your project directory
     steps:
       - checkout  # Checkout the code from the repository
 
@@ -109,7 +109,7 @@ jobs:
 
       # Use the PHPUnit Orb to run tests
       - phpunit/run:
-          tests: "tests"  # Directory containing your tests
+          test_directory: tests  # Directory containing your tests
           phpunit_version: "9.5.0"  # Specify a version if needed
           options: "--testsuite=Unit"  # Custom options for PHPUnit
 

@@ -58,25 +58,66 @@
 
 #------------------------------------------------------------------
 
+# version: 2.1
+
+# orbs:
+#   php: circleci/php@1.1.0
+
+# jobs:
+
+#   run_tests:
+#     docker:
+#       - image: cimg/php:7.4
+#     working_directory: /home/circleci/project  # Set the correct working directory
+#     steps:
+#       - checkout  # This will clone your repository into the working directory
+#       - php/install-composer:
+#           install-version: 2.0.8
+#       - php/install-packages
+#       - run:
+#           name: Run Test Cases
+#           command: phpunit --testsuite=Unit 
+
+# workflows:
+#   test_application:
+#     jobs:
+#       - run_tests
+
+#------------------------------------------------------
 version: 2.1
 
 orbs:
   php: circleci/php@1.1.0
 
 jobs:
-
   run_tests:
     docker:
-      - image: cimg/php:7.4
-    working_directory: /home/circleci/project  # Set the correct working directory
+      - image: cimg/php:7.4  # Use the appropriate PHP image version
+    working_directory: ~/project  # Set the correct working directory
     steps:
-      - checkout  # This will clone your repository into the working directory
+      - checkout  # Checkout the code from the repository
+
+      # Install Composer using the orb
       - php/install-composer:
           install-version: 2.0.8
-      - php/install-packages
+
+      # Install dependencies
       - run:
-          name: Run Test Cases
-          command: composer test
+          name: Install Dependencies
+          command: composer install --no-interaction --no-progress --no-suggest
+
+      # Download PHPUnit using the orb's install command
+      - php/install-phpunit:
+          install-version: 9.5.0  # Specify the PHPUnit version you want
+
+      # Run PHPUnit tests
+      - run:
+          name: Run Unit Tests
+          command: phpunit --testsuite=Unit  # Run PHPUnit for the 'Unit' test suite
+
+      - run:
+          name: Run Feature Tests
+          command: phpunit --testsuite=Feature  # Run PHPUnit for the 'Feature' test suite
 
 workflows:
   test_application:

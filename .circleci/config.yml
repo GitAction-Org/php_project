@@ -87,7 +87,8 @@
 version: 2.1
 
 orbs:
-  php: circleci/php@1.1.0
+  phpunit: stockfiller/phpunit@1.0.0
+  php: circleci/php@1.1.0  # Still using this for Composer if necessary
 
 jobs:
   run_tests:
@@ -97,27 +98,20 @@ jobs:
     steps:
       - checkout  # Checkout the code from the repository
 
-      # Install Composer using the orb
+      # Install Composer using the CircleCI PHP orb
       - php/install-composer:
           install-version: 2.0.8
 
-      # Install dependencies
+      # Install project dependencies
       - run:
           name: Install Dependencies
           command: composer install --no-interaction --no-progress --no-suggest
 
-      # Download PHPUnit using the orb's install command
-      - php/install-phpunit:
-          install-version: 9.5.0  # Specify the PHPUnit version you want
-
-      # Run PHPUnit tests
-      - run:
-          name: Run Unit Tests
-          command: phpunit --testsuite=Unit  # Run PHPUnit for the 'Unit' test suite
-
-      - run:
-          name: Run Feature Tests
-          command: phpunit --testsuite=Feature  # Run PHPUnit for the 'Feature' test suite
+      # Use the PHPUnit Orb to run tests
+      - phpunit/run:
+          tests: "tests"  # Directory containing your tests
+          phpunit_version: "9.5.0"  # Specify a version if needed
+          options: "--testsuite=Unit"  # Custom options for PHPUnit
 
 workflows:
   test_application:

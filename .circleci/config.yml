@@ -1,71 +1,25 @@
-# version: 2.1
-
-# orbs:
-#   php: circleci/php@1.1.0
-
-# jobs:
-#   install_dependencies:
-#     docker:
-#       - image: cimg/php:7.4 
-#     steps:
-#       - checkout
-#       - php/install-composer:
-#           install-version: 2.0.8 
-#       - php/install-packages
-
-#   run_tests:
-#     docker:
-#       - image: cimg/php:7.4
-#     steps:
-#       - php/install-composer:
-#           install-version: 2.0.8
-#       - php/install-packages
-#       - run:
-#           name: Run Test Cases
-#           command: composer test
-
-# workflows:
-#   test_application:
-#     jobs:
-#       - install_dependencies
-#       - run_tests
-
-
-#-----------------------------------------------------------
-
 version: 2.1
 
 orbs:
   php: circleci/php@1.1.0
 
 jobs:
-  install_dependencies:
-    docker:
-      - image: cimg/php:7.4 
-    working_directory: composer.json
-    steps:
-      - checkout
-      - run:
-          name: Check Directory Contents
-          command: ls -la  # List files to verify the presence of composer.json and composer.lock
-      - php/install-composer:
-          install-version: 2.0.8
-      - php/install-packages
-      - persist_to_workspace:
-          root: ~/project  # Save the directory to a workspace so the next job can use it
-          paths:
-            - .  # Persist the entire project directory, including installed packages
+  # install_dependencies:
+  #   docker:
+  #     - image: cimg/php:7.4 
+  #   steps:
+  #     - checkout
+  #     - php/install-composer:
+  #         install-version: 2.0.8 
+  #     - php/install-packages
 
   run_tests:
     docker:
       - image: cimg/php:7.4
-    working_directory: ~/project  # Ensure you're in the correct working directory
     steps:
-      - attach_workspace:
-          at: ~/project  # Attach the workspace so this job has access to the installed dependencies
-      - run:
-          name: Check Directory Contents
-          command: ls -la  # Debugging step, optional
+      - php/install-composer:
+          install-version: 2.0.8
+      - php/install-packages
       - run:
           name: Run Test Cases
           command: composer test
@@ -75,3 +29,6 @@ workflows:
     jobs:
       - install_dependencies
       - run_tests
+
+
+#-----------------------------------------------------------

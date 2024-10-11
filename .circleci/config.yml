@@ -148,9 +148,6 @@ jobs:
       - run:
           name: Set permissions for PHPUnit
           command: chmod +x ./vendor/bin/phpunit
-     # - run:
-      #    name: Run PHPUnit Tests
-       #   command: ./vendor/bin/phpunit --log-junit test-results.xml HelloTest.php
       - run:
           name: Run PHPUnit Tests
           command: ./vendor/bin/phpunit --log-junit test-results.xml test/CalculatorTest.php
@@ -172,6 +169,4 @@ workflows:
   build-and-test:
     jobs:
       - test-php
-      # - deploy:
-      #     requires:
-      #       - test-php
+      

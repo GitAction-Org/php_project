@@ -83,52 +83,95 @@
 #     jobs:
 #       - run_tests
 
-#------------------------------------------------------
-version: 2.1
+#-----------executed-------------------------------------------
+# version: 2.1
 
+# orbs:
+#   php: circleci/php@1.1.0
+
+# jobs:
+#   run_tests:
+#     docker:
+#       - image: cimg/php:7.4 # Use the appropriate PHP image version
+#     working_directory: /home/circleci/project  # Set the correct working directory
+#     steps:
+#       - checkout  # Checkout the code from the repository
+
+#       # Update package list and install Composer
+#       - run:
+#           name: Install Composer
+#           command: |
+#             sudo apt-get update && sudo apt-get install -y wget unzip # Install wget and unzip
+#             mkdir -p ./composer # Create the composer directory
+#             php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#             php composer-setup.php --install-dir=./composer --filename=composer # Install Composer locally
+#             php -r "unlink('composer-setup.php');"
+#             echo 'export PATH=$PATH:$PWD/composer' >> $BASH_ENV # Add Composer to PATH
+
+#       - run:
+#           name: Install Dependencies
+#           command: ./composer/composer install --no-interaction --no-progress --no-suggest # Use the correct path
+
+#       - run:
+#           name: Install PHPUnit
+#           command: |
+#             ./composer/composer global require phpunit/phpunit # Install PHPUnit globally
+#             echo 'export PATH=$PATH:$HOME/.composer/vendor/bin' >> $BASH_ENV # Add PHPUnit to PATH
+
+#       - run:
+#           name: Run Unit Tests
+#           command: phpunit --testsuite=Unit # Run PHPUnit for the 'Unit' test suite
+
+#       - run:
+#           name: Run Feature Tests
+#           command: phpunit --testsuite=Feature # Run PHPUnit for the 'Feature' test suite
+
+# workflows:
+#   test_application:
+#     jobs:
+#       - run_tests
+#-----------------------executed---------------------------------------------------------
+
+#---------------------------------
+version: 2.1
 orbs:
   php: circleci/php@1.1.0
-
+ 
 jobs:
-  run_tests:
+  test-php:
     docker:
-      - image: cimg/php:7.4 # Use the appropriate PHP image version
-    working_directory: /home/circleci/project  # Set the correct working directory
+      - image: cimg/php:8.2.7
     steps:
-      - checkout  # Checkout the code from the repository
-
-      # Update package list and install Composer
+      - checkout
+      - php/install-composer:
+          install-version: 1.10.16
       - run:
-          name: Install Composer
-          command: |
-            sudo apt-get update && sudo apt-get install -y wget unzip # Install wget and unzip
-            mkdir -p ./composer # Create the composer directory
-            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-            php composer-setup.php --install-dir=./composer --filename=composer # Install Composer locally
-            php -r "unlink('composer-setup.php');"
-            echo 'export PATH=$PATH:$PWD/composer' >> $BASH_ENV # Add Composer to PATH
-
+          name: Set permissions for PHPUnit
+          command: chmod +x ./vendor/bin/phpunit
+     # - run:
+      #    name: Run PHPUnit Tests
+       #   command: ./vendor/bin/phpunit --log-junit test-results.xml HelloTest.php
       - run:
-          name: Install Dependencies
-          command: ./composer/composer install --no-interaction --no-progress --no-suggest # Use the correct path
-
-      # Install PHPUnit globally using Composer
+          name: Run PHPUnit Tests
+          command: ./vendor/bin/phpunit --log-junit test-results.xml HelloTest.php
+      - store_test_results:
+          path: test-results.xml
+      - store_artifacts:
+          path: test-results.xml
+          destination: test-results
+ 
+  deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
       - run:
-          name: Install PHPUnit
-          command: |
-            ./composer/composer global require phpunit/phpunit # Install PHPUnit globally
-            echo 'export PATH=$PATH:$HOME/.composer/vendor/bin' >> $BASH_ENV # Add PHPUnit to PATH
-
-      # Run PHPUnit tests
-      - run:
-          name: Run Unit Tests
-          command: phpunit --testsuite=Unit # Run PHPUnit for the 'Unit' test suite
-
-      - run:
-          name: Run Feature Tests
-          command: phpunit --testsuite=Feature # Run PHPUnit for the 'Feature' test suite
-
+          name: Deploy
+          command: '#e.g. ./deploy.sh'
+ 
 workflows:
-  test_application:
+  build-and-test:
     jobs:
-      - run_tests
+      - test-php
+      # - deploy:
+      #     requires:
+      #       - test-php
